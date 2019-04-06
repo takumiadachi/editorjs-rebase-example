@@ -70,7 +70,7 @@ class App extends React.Component {
 
   componentDidMount() {
     // this.refsEditor.current.focus();
-    //
+
     this.ref1 = base.syncState("todoList", {
       context: this,
       state: "list",
@@ -84,9 +84,6 @@ class App extends React.Component {
   handleAddItem(newItem) {
     this.setState({
       list: this.state.list.concat([newItem])
-    });
-    this.setState({
-      list2: this.state.list2.concat([newItem])
     });
   }
 
