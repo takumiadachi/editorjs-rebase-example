@@ -9,6 +9,11 @@ import base from "./rebase";
 // My Components
 import AddItem from "./todo/AddItem";
 import List from "./todo/List";
+// EditorJS
+import EditorJs from "@editorjs/editorjs";
+import ejsHeader from "@editorjs/header";
+import ejsList from "@editorjs/list";
+import ejsImage from "@editorjs/image";
 
 window.addEventListener("load", () => {
   console.log("Event: Load");
@@ -66,11 +71,12 @@ class App extends React.Component {
     };
 
     this.refsEditor = React.createRef();
+    this.editor = null;
   }
 
-  componentDidMount() {
-    // this.refsEditor.current.focus();
+  componentWillMount() {}
 
+  componentDidMount() {
     this.ref1 = base.syncState("todoList", {
       context: this,
       state: "list",
@@ -79,6 +85,12 @@ class App extends React.Component {
         this.setState({ loading: false });
       }
     });
+
+    this.editor = new EditorJs({
+      holderId: "codex-editor"
+    });
+
+    this.refsEditor.current.focus();
   }
 
   handleAddItem(newItem) {
@@ -92,9 +104,6 @@ class App extends React.Component {
     newList.splice(index, 1);
     this.setState({
       list: newList
-    });
-    this.setState({
-      list2: newList
     });
   }
 
@@ -123,6 +132,7 @@ class App extends React.Component {
           </div>
         </div>
         {/** */}
+        <div id="codex-editor" ref={this.refsEditor} />
       </div>
     );
   }
