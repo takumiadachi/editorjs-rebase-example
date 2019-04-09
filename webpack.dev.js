@@ -62,7 +62,7 @@ module.exports = {
   devServer: {
     compress: true,
     host: "0.0.0.0",
-    port: 3032
+    port: 3033
   },
   plugins: [
     new HtmlWebPackPlugin({

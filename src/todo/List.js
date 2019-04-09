@@ -7,29 +7,23 @@ class List extends React.Component {
         margin: "5px 0"
       },
       removeItem: {
-        fontSize: 20,
         position: "absolute",
-        top: 12,
+        top: 22,
         left: 6,
         cursor: "pointer",
         color: "rgb(222, 79, 79)",
         border: "none",
-        background: "none",
         padding: 0
       },
       todoItem: {
         paddingLeft: 20,
-        fontSize: 17
+        fontSize: 18
       }
     };
     var listItems = this.props.items.map((item, index) => {
       return (
-        <li key={index} className="list-group-item" style={styles.listGroup}>
-          <button
-            className="glyphicon glyphicon-remove"
-            style={styles.removeItem}
-            onClick={this.props.remove.bind(null, index)}
-          />
+        <li key={index} style={styles.listGroup}>
+          <button onClick={this.props.remove.bind(null, index)}>Remove</button>
           <span style={styles.todoItem}>{item}</span>
         </li>
       );

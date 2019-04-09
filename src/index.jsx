@@ -10,10 +10,17 @@ import base from "./rebase";
 import AddItem from "./todo/AddItem";
 import List from "./todo/List";
 // EditorJS
-import EditorJs from "@editorjs/editorjs";
+import EditorJS from "@editorjs/editorjs";
 import ejsHeader from "@editorjs/header";
+import ejsCheckList from "@editorjs/checklist";
 import ejsList from "@editorjs/list";
-import ejsImage from "@editorjs/image";
+import ejsEmbed from "@editorjs/embed";
+import ejsInlineCode from "@editorjs/inline-code";
+import ejsQuote from "@editorjs/quote";
+import ejsTable from "@editorjs/table";
+// import ejsSimpleImage from "@editorjs/simple-image";
+//import ejsImage from "@editorjs/image";
+//import ejsLink from "@editorjs/Link";
 
 window.addEventListener("load", () => {
   console.log("Event: Load");
@@ -86,11 +93,59 @@ class App extends React.Component {
       }
     });
 
-    this.editor = new EditorJs({
-      holderId: "codex-editor"
+    this.editor = new EditorJS({
+      holderId: "codex-editor",
+      autofocus: true,
+      // Plugins
+      tools: {
+        header: {
+          class: ejsHeader,
+          shortcut: "CMD+SHIFT+H",
+          config: {
+            placeholder: "Enter a header"
+          }
+        },
+        checklist: {
+          class: ejsCheckList,
+          inlineToolbar: true
+        },
+        list: {
+          class: ejsList,
+          inlineToolbar: true
+        },
+        embed: {
+          class: ejsEmbed,
+          config: {
+            services: {
+              youtube: true,
+              coub: true
+            }
+          }
+        },
+        quote: {
+          class: ejsQuote,
+          inlineToolbar: true,
+          shortcut: "CMD+SHIFT+O",
+          config: {
+            quotePlaceholder: "Enter a quote",
+            captionPlaceholder: "Quote's author"
+          }
+        },
+        inlineCode: {
+          class: ejsInlineCode,
+          shortcut: "CMD+SHIFT+M"
+        },
+        table: {
+          class: ejsTable,
+          inlineToolbar: true,
+          config: {
+            rows: 2,
+            cols: 3
+          }
+        }
+        // image: ejsSimpleImage,
+      }
     });
-
-    this.refsEditor.current.focus();
   }
 
   handleAddItem(newItem) {
@@ -113,23 +168,17 @@ class App extends React.Component {
     return (
       <div>
         {/** */}
-        <div className="container">
-          <div className="row">
-            <div className="col-sm-6 col-md-offset-3">
-              <div className="col-sm-12">
-                <h3 className="text-center"> re-base Todo List </h3>
-                <AddItem add={this.handleAddItem.bind(this)} />
-                {this.state.loading === true ? (
-                  <h3> LOADING... </h3>
-                ) : (
-                  <List
-                    items={this.state.list}
-                    remove={this.handleRemoveItem.bind(this)}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
+        <div>
+          <h3> re-base Todo List </h3>
+          <AddItem add={this.handleAddItem.bind(this)} />
+          {this.state.loading === true ? (
+            <h3> LOADING... </h3>
+          ) : (
+            <List
+              items={this.state.list}
+              remove={this.handleRemoveItem.bind(this)}
+            />
+          )}
         </div>
         {/** */}
         <div id="codex-editor" ref={this.refsEditor} />
