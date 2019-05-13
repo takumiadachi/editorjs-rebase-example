@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import * as OfflinePluginRuntime from "offline-plugin/runtime";
-import "./css/index.scss";
+import "./css/index.css";
 // Mobx
 import { observer } from "mobx-react";
 // Rebase
@@ -9,6 +9,7 @@ import base from "./rebase";
 // My Components
 import AddItem from "./todo/AddItem";
 import List from "./todo/List";
+import CPreview from "./CPreview";
 // EditorJS
 import EditorJS from "@editorjs/editorjs";
 import ejsHeader from "@editorjs/header";
@@ -18,7 +19,8 @@ import ejsEmbed from "@editorjs/embed";
 import ejsInlineCode from "@editorjs/inline-code";
 import ejsQuote from "@editorjs/quote";
 import ejsTable from "@editorjs/table";
-// import ejsSimpleImage from "@editorjs/simple-image";
+import ejsCodeTool from "@editorjs/code";
+import ejsSimpleImage from "@editorjs/simple-image";
 //import ejsImage from "@editorjs/image";
 //import ejsLink from "@editorjs/Link";
 
@@ -68,20 +70,72 @@ OfflinePluginRuntime.install({
   }
 });
 
+/**
+ * Converts '>', '<', '&' symbols to entities
+ */
+function encodeHTMLEntities(string) {
+  return string
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/**
+ * Some styling magic
+ */
+function stylize(string) {
+  /** Stylize JSON keys */
+  string = string.replace(/"(\w+)"\s?:/g, '"<span class=sc_key>$1</span>" :');
+  /** Stylize tool names */
+  string = string.replace(
+    /"(paragraph|quote|list|header|link|code|image|delimiter|raw|checklist|table|embed|warning)"/g,
+    '"<span class=sc_toolname>$1</span>"'
+  );
+  /** Stylize HTML tags */
+  string = string.replace(
+    /(&lt;[\/a-z]+(&gt;)?)/gi,
+    "<span class=sc_tag>$1</span>"
+  );
+  /** Stylize strings */
+  string = string.replace(/"([^"]+)"/gi, '"<span class=sc_attr>$1</span>"');
+  /** Boolean/Null */
+  string = string.replace(
+    /\b(true|false|null)\b/gi,
+    "<span class=sc_bool>$1</span>"
+  );
+  return string;
+}
+
 @observer
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      list: []
+      list: [],
+      data: ""
     };
 
     this.refsEditor = React.createRef();
+    this.refsSaveButton = React.createRef();
     this.editor = null;
   }
 
   componentWillMount() {}
+
+  saveData() {
+    console.log("data saved!");
+    this.editor.save().then(savedData => {
+      this.setState({
+        data: stylize(encodeHTMLEntities(JSON.stringify(savedData, null, 4)))
+      });
+    });
+  }
+
+  componentDidUpdate(prevState) {
+    console.log("App prev", prevState);
+    console.log("App next", this.state);
+  }
 
   componentDidMount() {
     this.ref1 = base.syncState("todoList", {
@@ -94,7 +148,7 @@ class App extends React.Component {
     });
 
     this.editor = new EditorJS({
-      holderId: "codex-editor",
+      holder: "codex-editor",
       autofocus: true,
       // Plugins
       tools: {
@@ -104,6 +158,11 @@ class App extends React.Component {
           config: {
             placeholder: "Enter a header"
           }
+        },
+        code: ejsCodeTool,
+        inlineCode: {
+          class: ejsInlineCode,
+          shortcut: "CMD+SHIFT+M"
         },
         checklist: {
           class: ejsCheckList,
@@ -131,10 +190,7 @@ class App extends React.Component {
             captionPlaceholder: "Quote's author"
           }
         },
-        inlineCode: {
-          class: ejsInlineCode,
-          shortcut: "CMD+SHIFT+M"
-        },
+
         table: {
           class: ejsTable,
           inlineToolbar: true,
@@ -142,8 +198,8 @@ class App extends React.Component {
             rows: 2,
             cols: 3
           }
-        }
-        // image: ejsSimpleImage,
+        },
+        image: ejsSimpleImage
       }
     });
   }
@@ -168,7 +224,7 @@ class App extends React.Component {
     return (
       <div>
         {/** */}
-        <div>
+        {/* <div>
           <h3> re-base Todo List </h3>
           <AddItem add={this.handleAddItem.bind(this)} />
           {this.state.loading === true ? (
@@ -179,9 +235,11 @@ class App extends React.Component {
               remove={this.handleRemoveItem.bind(this)}
             />
           )}
-        </div>
+        </div> */}
         {/** */}
+        <button onClick={this.saveData.bind(this)}>editor.save</button>
         <div id="codex-editor" ref={this.refsEditor} />
+        <CPreview data={this.state.data} />
       </div>
     );
   }
