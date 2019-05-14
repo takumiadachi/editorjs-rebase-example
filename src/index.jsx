@@ -146,14 +146,14 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.ref1 = base.syncState("todoList", {
-      context: this,
-      state: "list",
-      asArray: true,
-      then() {
-        this.setState({ loading: false });
-      }
-    });
+    // this.ref1 = base.syncState("todoList", {
+    //   context: this,
+    //   state: "list",
+    //   asArray: true,
+    //   then() {
+    //     this.setState({ loading: false });
+    //   }
+    // });
 
     this.editor = new EditorJS({
       holder: "codex-editor",
