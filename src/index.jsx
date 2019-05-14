@@ -5,7 +5,7 @@ import "./css/index.css";
 // Mobx
 import { observer } from "mobx-react";
 // Rebase
-import base from "./rebase";
+// import base from "./rebase";
 // My Components
 import AddItem from "./todo/AddItem";
 import List from "./todo/List";
