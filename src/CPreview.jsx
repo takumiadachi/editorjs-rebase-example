@@ -1,6 +1,10 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
+import ReactHtmlParser, {
+  processNodes,
+  convertNodeToElement,
+  htmlparser2
+} from "react-html-parser";
 
 class CPreview extends React.Component {
   constructor(props) {
@@ -16,15 +20,13 @@ class CPreview extends React.Component {
 
   render() {
     return (
-      <div>
-        <pre>{this.props.data}</pre>
-      </div>
+      <pre className="json-output">{ReactHtmlParser(this.props.data)}</pre>
     );
   }
 }
 
 CPreview.defaultProps = {
-  data: "test"
+  data: ""
 };
 
 CPreview.propTypes = {

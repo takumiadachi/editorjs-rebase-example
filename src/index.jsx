@@ -18,35 +18,40 @@ import ejsList from "@editorjs/list";
 import ejsEmbed from "@editorjs/embed";
 import ejsInlineCode from "@editorjs/inline-code";
 import ejsQuote from "@editorjs/quote";
-import ejsTable from "@editorjs/table";
 import ejsCodeTool from "@editorjs/code";
 import ejsSimpleImage from "@editorjs/simple-image";
+// import ejsTable from "@editorjs/table";
 //import ejsImage from "@editorjs/image";
 //import ejsLink from "@editorjs/Link";
+
+const ONLINE = `<div style="color:green">PWA Online!</div>`;
+const OFFLINE = `<div style="color:GoldenRod">PWA Offline</div>`;
 
 window.addEventListener("load", () => {
   console.log("Event: Load");
 
-  function updateNetworkStatus() {
+  function updateOnlineStatus() {
     if (navigator.onLine) {
-      document.getElementById("status").innerHTML = "Online!";
+      document.getElementById("status").innerHTML = ONLINE;
     } else {
-      document.getElementById("status").innerHTML = "Offline";
+      document.getElementById("status").innerHTML = OFFLINE;
     }
   }
 
   setTimeout(() => {
-    updateNetworkStatus();
+    updateOnlineStatus();
   }, 500);
 
-  window.addEventListener("offline", () => {
-    console.log("Event: Offline");
-    document.getElementById("status").innerHTML = "Offline";
-  });
-
+  // Reconnect online event
   window.addEventListener("online", () => {
     console.log("Event: Online");
-    document.getElementById("status").innerHTML = "Online!";
+    document.getElementById("status").innerHTML = ONLINE;
+  });
+
+  // Lose connection event
+  window.addEventListener("offline", () => {
+    console.log("Event: Offline");
+    document.getElementById("status").innerHTML = OFFLINE;
   });
 });
 
@@ -126,8 +131,11 @@ class App extends React.Component {
   saveData() {
     console.log("data saved!");
     this.editor.save().then(savedData => {
+      let output = JSON.stringify(savedData, null, 4);
+      output = encodeHTMLEntities(output);
+      output = stylize(output);
       this.setState({
-        data: stylize(encodeHTMLEntities(JSON.stringify(savedData, null, 4)))
+        data: output
       });
     });
   }
@@ -190,18 +198,57 @@ class App extends React.Component {
             captionPlaceholder: "Quote's author"
           }
         },
-
-        table: {
-          class: ejsTable,
-          inlineToolbar: true,
-          config: {
-            rows: 2,
-            cols: 3
-          }
+        // table: {
+        //   class: ejsTable,
+        //   inlineToolbar: true,
+        //   config: {
+        //     rows: 1,
+        //     cols: 1
+        //   }
+        // },
+        image: ejsSimpleImage,
+        // Initial editor data.
+        /**
+         * onReady callback
+         */
+        onReady: () => {
+          console.log("Editor.js onReady");
         },
-        image: ejsSimpleImage
+        /**
+         * onChange callback
+         */
+        onChange: () => {
+          console.log("Now I know that Editor's content changed!");
+        }
+      },
+      data: {
+        blocks: [
+          {
+            type: "header",
+            data: {
+              text: "Editor.js Dummy Data",
+              level: 2
+            }
+          },
+          {
+            type: "paragraph",
+            data: {
+              text: "Hey. Edit this and save and see the json preview below!"
+            }
+          }
+        ]
       }
     });
+
+    this.editor.isReady
+      .then(() => {
+        console.log("Editor.js is ready to work!");
+        /** Do anything you need after editor initialization */
+        this.saveData();
+      })
+      .catch(reason => {
+        console.log(`Editor.js initialization failed because of ${reason}`);
+      });
   }
 
   handleAddItem(newItem) {
@@ -238,8 +285,12 @@ class App extends React.Component {
         </div> */}
         {/** */}
         <button onClick={this.saveData.bind(this)}>editor.save</button>
-        <div id="codex-editor" ref={this.refsEditor} />
-        <CPreview data={this.state.data} />
+        <div className="edit-area">
+          <div id="codex-editor" ref={this.refsEditor} />
+        </div>
+        <div className="preview-area">
+          <CPreview data={this.state.data} />
+        </div>
       </div>
     );
   }

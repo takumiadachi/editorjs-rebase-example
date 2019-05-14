@@ -3,8 +3,69 @@
   src: url("../assets/Roboto-Regular.ttf");
 }
 
-html,
 body {
   font-family: "Roboto";
   font-size: 24px;
+  margin: 0;
+}
+
+.json-output {
+  max-width: 650px;
+  margin: 30px auto;
+  font-family: "PT Mono", Menlo, Monaco, Consolas, Courier New, monospace;
+  font-size: 13.3px;
+}
+
+.edit-area {
+  width: 750px;
+  height: 500px;
+  background-color: lightblue;
+  margin: 10px auto;
+}
+
+.preview-area {
+  height: 350px;
+  background-color: lightcyan;
+  overflow-x: auto;
+  padding: 0 30px;
+  max-width: 650px;
+  margin: 30px auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/**
+ * JSON highlighter
+ * See https://github.com/codex-team/editor.js/blob/master/example/assets/demo.css
+ */
+.sc_attr {
+  color: rgb(124, 106, 24);
+}
+.sc_key {
+  color: rgb(240, 113, 155);
+}
+.sc_toolname {
+  color: rgb(15, 205, 251);
+}
+.sc_tag {
+  color: rgb(4, 131, 216);
+}
+.sc_bool {
+  color: rgb(247, 60, 173);
+}
+
+.ce-example .ce-block:first-of-type h2.ce-header {
+  font-size: 50px;
+}
+
+.ce-example h2.ce-header {
+  font-size: 30px;
+}
+
+.ce-example h3.ce-header {
+  font-size: 24px;
+}
+
+.ce-example h4.ce-header {
+  font-size: 18px;
 }
