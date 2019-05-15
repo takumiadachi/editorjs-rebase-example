@@ -285,9 +285,7 @@ class App extends React.Component {
         </div> */}
         {/** */}
         <button onClick={this.saveData.bind(this)}>editor.save</button>
-        <div className="edit-area">
-          <div id="codex-editor" ref={this.refsEditor} />
-        </div>
+        <div className="edit-area" id="codex-editor" ref={this.refsEditor} />
         <div className="preview-area">
           <CPreview data={this.state.data} />
         </div>

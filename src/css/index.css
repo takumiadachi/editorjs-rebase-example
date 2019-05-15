@@ -18,9 +18,11 @@ body {
 
 .edit-area {
   width: 750px;
-  height: 500px;
+  min-height: 500px;
   background-color: lightblue;
   margin: 10px auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .preview-area {
